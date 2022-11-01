@@ -31,42 +31,40 @@ void main() {
     close(sockfd);
     exit(1);
   }
-clilen = sizeof(cliaddr);
-    if ((newsockfd = accept(sockfd, (struct sockaddr *)&cliaddr, &clilen)) <
-        0) {
-      perror(NULL);
-      close(sockfd);
-      exit(1);
-    }
-pid_t pid = fork();
-if(pid==0){ //child sends messages
-while(1){
-printf("String =>");
-fflush(stdin);
-memset(line, 0, 1000);
-fgets(line, 1000, stdin);
-while ((n = write(newsockfd, line, strlen(line) + 1)) < 0) {
-perror("Can\'t write\n");
-          perror(NULL);
-          close(sockfd);
-          close(newsockfd);
-          exit(1);
-        }
-//printf("system message:message sent\n");
-}
-}
-else{ //parent reserves messages
-while (1) {
-memset(line, 0, 1000);
-    while ((n = read(newsockfd, line, 999)) > 0){
-printf("\nReserved Message: %s\n", line);
+  clilen = sizeof(cliaddr);
+  if ((newsockfd = accept(sockfd, (struct sockaddr *)&cliaddr, &clilen)) < 0) {
+    perror(NULL);
+    close(sockfd);
+    exit(1);
+  }
+  pid_t pid = fork();
+  if (pid == 0) { // child sends messages
+    while (1) {
+      printf("String =>");
+      fflush(stdin);
+      memset(line, 0, 1000);
+      fgets(line, 1000, stdin);
+      while ((n = write(newsockfd, line, strlen(line) + 1)) < 0) {
+        perror("Can\'t write\n");
+        perror(NULL);
+        close(sockfd);
+        close(newsockfd);
+        exit(1);
       }
-    if (n < 0) {
-      perror(NULL);
-      close(sockfd);
-      close(newsockfd);
-      exit(1);
+      // printf("system message:message sent\n");
+    }
+  } else { // parent reserves messages
+    while (1) {
+      memset(line, 0, 1000);
+      while ((n = read(newsockfd, line, 999)) > 0) {
+        printf("\nReserved Message: %s\n", line);
+      }
+      if (n < 0) {
+        perror(NULL);
+        close(sockfd);
+        close(newsockfd);
+        exit(1);
+      }
     }
   }
-}
 }

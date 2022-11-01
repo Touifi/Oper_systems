@@ -37,39 +37,34 @@ void main(int argc, char **argv) {
     exit(1);
   }
 
-pid_t pid = fork();
-if(pid==0){ //child (sends messages)
-  for (;;) {
-    printf("String => ");
-    fflush(stdin);
-memset(sendline, 0, 1000);
-    fgets(sendline, 1000, stdin);
-    if ((n = write(sockfd, sendline, strlen(sendline) + 1)) < 0) {
-      perror("Can\'t write\n");
-      close(sockfd);
-      exit(1);
+  pid_t pid = fork();
+  if (pid == 0) { // child (sends messages)
+    for (;;) {
+      printf("String => ");
+      fflush(stdin);
+      memset(sendline, 0, 1000);
+      fgets(sendline, 1000, stdin);
+      if ((n = write(sockfd, sendline, strlen(sendline) + 1)) < 0) {
+        perror("Can\'t write\n");
+        close(sockfd);
+        exit(1);
+      }
+      // printf("system message: message sent\n");
     }
-    //printf("system message: message sent\n");
-  }
 
-
-}
-else{ //parent (accepts messages)
-for (;;) {
-  memset(recvline, 0, 1000);
-    while ((n = read(sockfd, recvline, 999)) > 0) {
-printf("\nReserved Message:%s\n",recvline);
-//printf("String=> ");
+  } else { // parent (accepts messages)
+    for (;;) {
+      memset(recvline, 0, 1000);
+      while ((n = read(sockfd, recvline, 999)) > 0) {
+        printf("\nReserved Message:%s\n", recvline);
+        // printf("String=> ");
+      }
+      if (n < 0) {
+        perror("Can\'t read\n");
+        close(sockfd);
+        exit(1);
+      }
+      printf("%s", recvline);
     }
-if(n<0){
- perror("Can\'t read\n");
-      close(sockfd);
-      exit(1);
-}
-    printf("%s", recvline);
   }
-
-
-
-}
 }
