@@ -1,2 +1,2 @@
 all:
-	gcc -Wall -g lines.c -o lines -lm
+	gcc -Wall -g -pthread lines.c -o lines -lm
