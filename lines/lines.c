@@ -24,9 +24,9 @@ bool Eq(float a, float b) {
 
 void FindCommonDot(struct Line line1, struct Line line2) {
   if (!Eq(line2.x, 0) && !Eq(line2.y, 0)) {
-    if ((line1.x / line2.x) == (line1.y / line2.y) &&
-        (line1.y / line2.y) == (line1.c / line2.c) &&
-        (line1.x / line2.x) == (line1.c / line2.c)) {
+    if (Eq(line1.x / line2.x, line1.y / line2.y) &&
+        Eq(line1.y / line2.y, line1.c / line2.c) &&
+        Eq(line1.x / line2.x, line1.c / line2.c)) {
       printf("Любая точка будет точкой пересечения!\n");
       return;
     }
